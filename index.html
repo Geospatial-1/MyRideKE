@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyRideKE — App</title>
+
+  <!-- Tailwind CDN with forms plugin (keeps your original design) -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Google Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1173d4" />
+
+  <style>
+    /* small base tweaks to keep consistent across screens */
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    html,body{height:100%}
+    body{min-height:100dvh; font-family:Manrope, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;}
+    /* tiny transition to smooth theme toggles */
+    .theme-toggle { transition: background-color .18s, color .18s; }
+    /* page-section used to define "pages" inside SPA */
+    .page-section { display:none; min-height: calc(100dvh - 68px); padding-bottom: 96px; }
+    .page-section.active { display:block; }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-[rgb(16,25,34)] text-slate-900 dark:text-white">
+
+  <!-- Top App Bar / Global Header -->
+  <header id="app-header" class="sticky top-0 z-30 bg-white/60 dark:bg-[rgb(16,25,34)] backdrop-blur p-3 border-b border-gray-200 dark:border-zinc-800 flex items-center gap-3">
+    <button id="nav-back" class="p-2 rounded-md text-slate-700 dark:text-white hidden">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+
+    <div class="flex-1 text-center">
+      <h1 id="header-title" class="text-lg font-bold">MyRideKE</h1>
+      <p id="header-sub" class="text-xs text-slate-500 dark:text-slate-400 hidden">sub</p>
+    </div>
+
+    <nav class="flex gap-2 items-center">
+      <button id="open-search" class="p-2 rounded-md text-slate-700 dark:text-white">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button id="open-settings" class="p-2 rounded-md text-slate-700 dark:text-white">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- MAIN: container for all page sections -->
+  <main id="app" class="p-4">
+
+    <!-- HOME / DASHBOARD -->
+    <section id="home" class="page-section active">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <div class="rounded-xl bg-white dark:bg-zinc-800 p-4 shadow">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-slate-500 dark:text-slate-400">Current Balance</p>
+              <h2 class="text-2xl font-bold">KES <span id="balance">15,000.00</span></h2>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn-primary px-3 py-2 rounded-lg bg-blue-600 text-white" data-link="#add-funds">Add Funds</button>
+              <button class="btn-green px-3 py-2 rounded-lg bg-green-500 text-white" data-link="#payout">Request Payout</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl bg-white dark:bg-zinc-800 p-4 shadow">
+          <h3 class="font-bold mb-3">Recent Transactions</h3>
+          <ul id="tx-list" class="space-y-3">
+            <!-- Example transaction -->
+            <li class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-lg bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-green-600">south_west</span>
+                </div>
+                <div>
+                  <div class="font-semibold">Earnings: Subaru Forester</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">Oct 28, 2023</div>
+                </div>
+              </div>
+              <div class="text-green-600 font-medium">+KES 4,250</div>
+            </li>
+            <!-- more list items can be inserted dynamically -->
+          </ul>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <a class="card-nav p-4 rounded-lg bg-white dark:bg-zinc-800 shadow flex flex-col items-start gap-2" href="#success-stories" data-link="#success-stories">
+            <h4 class="font-bold">Success Stories</h4>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Read stories from customers and owners</p>
+          </a>
+          <a class="card-nav p-4 rounded-lg bg-white dark:bg-zinc-800 shadow flex flex-col items-start gap-2" href="#rewards" data-link="#rewards">
+            <h4 class="font-bold">Rewards</h4>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Points, tiers & redeem</p>
+          </a>
+        </div>
+
+        <div class="rounded-xl bg-white dark:bg-zinc-800 p-4 text-center">
+          <button class="w-full rounded-lg py-3 bg-primary text-white font-bold" data-link="#bookings">Book a New Ride</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="success-stories" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Success Stories</h2>
+
+        <article class="rounded-lg bg-white dark:bg-zinc-800 p-4 shadow">
+          <div class="flex gap-4">
+            <div class="w-28 h-20 bg-cover bg-center rounded" style="background-image:url('assets/images/success1.jpg');"></div>
+            <div>
+              <p class="text-sm text-slate-500">Jane Doe, Happy Customer</p>
+              <h3 class="font-bold">A Trip to Remember!</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-300">The convenience and quality of the car I rented...</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="rounded-lg bg-white dark:bg-zinc-800 p-4 shadow">
+          <div class="flex gap-4">
+            <div class="w-28 h-20 bg-cover bg-center rounded" style="background-image:url('assets/images/success2.jpg');"></div>
+            <div>
+              <p class="text-sm text-slate-500">John Smith, Car Owner</p>
+              <h3 class="font-bold">Effortless Extra Income</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-300">Listing my car was simple, and bookings started quickly...</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Wallet / Finances -->
+    <section id="wallet" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Wallet</h2>
+        <div class="rounded-xl bg-white dark:bg-zinc-800 p-4 shadow">
+          <p class="text-sm text-slate-500">Current Balance</p>
+          <h3 class="text-3xl font-bold">KES 15,000.00</h3>
+          <div class="flex gap-3 mt-4">
+            <button class="w-full rounded-lg py-3 bg-blue-600 text-white" data-link="#add-funds">Add Funds</button>
+            <button class="w-full rounded-lg py-3 bg-green-500 text-white" data-link="#request-payout">Request Payout</button>
+          </div>
+        </div>
+        <h3 class="font-bold">Recent Transactions</h3>
+        <ul class="space-y-3">
+          <!-- copy tx-item template -->
+        </ul>
+      </div>
+    </section>
+
+    <!-- Rewards -->
+    <section id="rewards" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Rewards</h2>
+        <div class="p-4 rounded-lg bg-white dark:bg-zinc-800 shadow">
+          <p class="text-sm">Your Status: <strong>Silver</strong></p>
+          <p class="mt-3">You have <strong id="points">1,500</strong> points</p>
+          <div class="mt-3 bg-slate-200 rounded-full h-3 overflow-hidden">
+            <div id="points-bar" class="h-3 rounded-full bg-yellow-400" style="width:60%"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="p-4 rounded-lg bg-white dark:bg-zinc-800 shadow">
+            <h4 class="font-bold">10% Discount</h4>
+            <p class="text-sm text-slate-500">500 points</p>
+            <button class="mt-3 w-full rounded-lg py-2 bg-yellow-400">Redeem</button>
+          </div>
+          <div class="p-4 rounded-lg bg-white dark:bg-zinc-800 shadow">
+            <h4 class="font-bold">Free Contact Info</h4>
+            <p class="text-sm text-slate-500">100 points</p>
+            <button class="mt-3 w-full rounded-lg py-2 bg-yellow-400">Redeem</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Legal / Terms -->
+    <section id="legal" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Terms & Conditions</h2>
+        <div class="space-y-2">
+          <details class="p-4 rounded-lg bg-white dark:bg-zinc-800">
+            <summary class="font-semibold">User Obligations</summary>
+            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">By accessing this app, you accept the terms...</p>
+          </details>
+          <details class="p-4 rounded-lg bg-white dark:bg-zinc-800">
+            <summary class="font-semibold">Payment Terms</summary>
+            <ul class="list-disc ml-5 text-sm text-slate-600 dark:text-slate-300 mt-2">
+              <li>Car owners agree to a 15% commission on bookings.</li>
+              <li>Customers charged KES 100 to access owner contact info (non-refundable).</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Contact Us</h2>
+        <div class="rounded-lg bg-white dark:bg-zinc-800 p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="font-semibold">Email Support</p>
+              <p class="text-sm text-slate-500">support@myrideke.com</p>
+            </div>
+            <a href="mailto:support@myrideke.com" class="text-blue-600">Email</a>
+          </div>
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="font-semibold">Call Us</p>
+              <p class="text-sm text-slate-500">Mon-Fri, 9am-5pm</p>
+            </div>
+            <a href="tel:+254712345678" class="text-blue-600">+254 712 345 678</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Report Damage (example of interactive / image markers omitted due to static page; can be replaced with a small JS canvas later) -->
+    <section id="report-damage" class="page-section">
+      <div class="max-w-3xl mx-auto">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Report Vehicle Damage</h2>
+        <form id="damage-form" class="bg-white dark:bg-zinc-800 p-4 rounded-lg space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label class="block">
+              <span class="text-sm">Date</span>
+              <input type="date" class="form-input w-full rounded-lg p-2 mt-1" />
+            </label>
+            <label class="block">
+              <span class="text-sm">Time</span>
+              <input type="time" class="form-input w-full rounded-lg p-2 mt-1" />
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="text-sm">Describe the damage</span>
+            <textarea class="form-textarea w-full rounded-lg p-3 mt-1" placeholder="e.g. Scratch on driver's door"></textarea>
+          </label>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div class="h-20 rounded-lg bg-slate-100 dark:bg-zinc-700 flex items-center justify-center">+Photo</div>
+            <div class="h-20 rounded-lg bg-slate-100 dark:bg-zinc-700"></div>
+            <div class="h-20 rounded-lg bg-slate-100 dark:bg-zinc-700"></div>
+          </div>
+
+          <div class="flex gap-2">
+            <button class="w-full py-3 rounded-lg bg-red-600 text-white" type="submit">Submit Report</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Simple Settings page -->
+    <section id="settings" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Settings</h2>
+
+        <div class="bg-white dark:bg-zinc-800 p-4 rounded-lg space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold">Dark Mode</p>
+              <p class="text-sm text-slate-500">Toggle UI theme</p>
+            </div>
+            <label class="inline-flex items-center p-1 bg-slate-200 rounded-full">
+              <input id="toggle-theme" type="checkbox" class="sr-only" />
+              <span id="toggle-dot" class="w-6 h-6 bg-white rounded-full shadow"></span>
+            </label>
+          </div>
+
+          <div>
+            <p class="font-semibold">Language</p>
+            <select id="language-select" class="form-select w-full mt-2 rounded-lg">
+              <option>English</option>
+              <option>Kiswahili</option>
+              <option>Français</option>
+              <option>Español</option>
+            </select>
+          </div>
+
+          <div>
+            <button id="open-legal" class="mt-2 w-full py-2 rounded-lg bg-slate-200">View Privacy / Terms</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minimal Bookings / Upcoming bookings -->
+    <section id="bookings" class="page-section">
+      <div class="max-w-3xl mx-auto space-y-4">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Upcoming Bookings</h2>
+
+        <div class="rounded-lg bg-white dark:bg-zinc-800 p-4">
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <p class="text-sm text-green-600">Confirmed</p>
+              <h3 class="font-bold">Toyota Axio</h3>
+              <p class="text-sm text-slate-500">12th Aug · Pick-up: Westlands</p>
+            </div>
+            <div class="w-28 h-20 bg-cover bg-center rounded" style="background-image:url('assets/images/car1.jpg')"></div>
+          </div>
+          <div class="mt-3 flex gap-2">
+            <button class="w-full py-2 rounded-lg bg-green-500 text-white">View Details</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="notifications" class="page-section">
+      <div class="max-w-3xl mx-auto">
+        <a class="back-link text-sm text-slate-600 dark:text-slate-300" data-back>← Back</a>
+        <h2 class="text-2xl font-bold">Notifications</h2>
+        <div class="space-y-2 mt-3">
+          <div class="p-3 rounded-lg bg-white dark:bg-zinc-800 flex items-start gap-3">
+            <div class="rounded-full bg-blue-100 p-2"><span class="material-symbols-outlined text-blue-600">chat_bubble</span></div>
+            <div>
+              <div class="font-semibold">New Message</div>
+              <div class="text-sm text-slate-500">John Doe: Is the car available?</div>
+            </div>
+          </div>
+          <!-- ... -->
+        </div>
+      </div>
+    </section>
+
+    <!-- More sections can be added similarly -->
+  </main>
+
+  <!-- Bottom nav (fixed) -->
+  <nav class="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-3xl bg-white/90 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 rounded-full p-2 flex justify-between shadow">
+    <a class="nav-link flex-1 text-center py-2" data-link="#home"><span class="material-symbols-outlined block">home</span><span class="text-xs block">Home</span></a>
+    <a class="nav-link flex-1 text-center py-2" data-link="#wallet"><span class="material-symbols-outlined block">account_balance_wallet</span><span class="text-xs block">Wallet</span></a>
+    <a class="nav-link flex-1 text-center py-2" data-link="#bookings"><span class="material-symbols-outlined block">book_online</span><span class="text-xs block">Bookings</span></a>
+    <a class="nav-link flex-1 text-center py-2" data-link="#rewards"><span class="material-symbols-outlined block">emoji_events</span><span class="text-xs block">Rewards</span></a>
+    <a class="nav-link flex-1 text-center py-2" data-link="#settings"><span class="material-symbols-outlined block">person</span><span class="text-xs block">Profile</span></a>
+  </nav>
+
+  <!-- Lightweight inline JS: router, interactions -->
+  <script>
+    // Simple SPA hash router & UI wiring
+    const sections = document.querySelectorAll('.page-section');
+    const headerTitle = document.getElementById('header-title');
+    const headerSub = document.getElementById('header-sub');
+    const navBack = document.getElementById('nav-back');
+
+    function showSection(hash) {
+      if (!hash) hash = '#home';
+      const id = hash.replace('#','');
+      sections.forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(id);
+      if (target) target.classList.add('active');
+      // set header text by mapping
+      const map = {
+        'home':'MyRideKE',
+        'wallet':'Finances',
+        'success-stories':'Success Stories',
+        'rewards':'Rewards',
+        'legal':'Legal',
+        'contact':'Contact',
+        'report-damage':'Report Damage',
+        'settings':'Settings',
+        'bookings':'Upcoming Bookings',
+        'notifications':'Notifications'
+      };
+      headerTitle.textContent = map[id] || 'MyRideKE';
+      // show back button on non-home pages
+      if (id === 'home') { navBack.classList.add('hidden'); headerSub.classList.add('hidden'); }
+      else { navBack.classList.remove('hidden'); headerSub.classList.add('hidden'); }
+      // update URL hash without pushing history redundantly
+      if(location.hash !== hash) history.pushState(null, '', hash);
+    }
+
+    // initial route
+    showSection(location.hash || '#home');
+
+    // listen for hashchange or popstate
+    window.addEventListener('hashchange', () => showSection(location.hash));
+    window.addEventListener('popstate', () => showSection(location.hash));
+
+    // nav link click handlers (delegated)
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('[data-link]');
+      if (link) {
+        e.preventDefault();
+        const href = link.getAttribute('data-link');
+        if (href) showSection(href);
+      }
+      if (e.target.matches('[data-back]') || e.target.closest('[data-back]')) {
+        e.preventDefault();
+        showSection('#home');
+      }
+    });
+
+    // theme toggle
+    const themeToggle = document.getElementById('toggle-theme');
+    themeToggle.addEventListener('change', (e) => {
+      document.documentElement.classList.toggle('dark', e.target.checked);
+      localStorage.setItem('mr_theme_dark', e.target.checked ? '1':'0');
+    });
+    // restore theme
+    if(localStorage.getItem('mr_theme_dark') === '1') {
+      document.documentElement.classList.add('dark');
+      if(themeToggle) themeToggle.checked = true;
+    }
+
+    // register service worker if available
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(()=>{/*fail silently*/});
+    }
+
+    // small demo: wire Submit Report form to show toast (no backend)
+    const damageForm = document.getElementById('damage-form');
+    if(damageForm){
+      damageForm.addEventListener('submit', (ev)=>{
+        ev.preventDefault();
+        alert('Report submitted — in production you would POST this to your backend or Firebase.');
+        showSection('#home');
+      });
+    }
+
+    // Basic accessibility: focus first element on route change
+    const observer = new MutationObserver(()=> {
+      const active = document.querySelector('.page-section.active');
+      if(active){
+        const focusable = active.querySelector('button, [href], input, textarea, select');
+        if(focusable) focusable.focus();
+      }
+    });
+    observer.observe(document.getElementById('app'), {childList:true, subtree:true});
+
+  </script>
+
+  <!-- small utility styles (Tailwind get your styling) -->
+  <style>
+    .btn-primary{background:#1173d4}
+    .btn-green{background:#3DDC97}
+    .card-nav{border:1px solid rgba(0,0,0,0.04)}
+  </style>
+</body>
+</html>
